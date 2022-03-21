@@ -11,7 +11,7 @@ Serializable = Optional[Union[Dict, List, str, int, float]]
 
 
 def json_dump(obj: Serializable) -> str:
-    """ Serialize the given object in a fixed and predefined format.
+    """Serialize the given object in a fixed and predefined format.
     Args:
         obj:
             Object to serialize.
@@ -22,7 +22,7 @@ def json_dump(obj: Serializable) -> str:
 
 
 def maphash(obj: Serializable) -> str:
-    """ Hash the given object.
+    """Hash the given object.
     Args:
         obj:
             Object to hash.
