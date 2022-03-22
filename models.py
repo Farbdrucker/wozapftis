@@ -1,7 +1,7 @@
 from sqlalchemy import Integer, Column, String, Float, ForeignKey
 from sqlalchemy.orm import relationship
 
-from .database import Base
+from database import Base
 
 
 class Venue(Base):
@@ -13,12 +13,13 @@ class Venue(Base):
     lat = Column(Float)
     lon = Column(Float)
     country = Column(String)
+    city = Column(String)
     street = Column(String)
     housenumber = Column(String)
     postcode = Column(Integer)
     venue = Column(Integer)
 
-    votes = relationship("Vote", back_populate="venue")
+    votes = relationship("Vote", back_populates="venue")
 
 
 class Vote(Base):
