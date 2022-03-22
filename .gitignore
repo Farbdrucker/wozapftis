@@ -1,0 +1,5 @@
+cache
+models/cache
+models/.DS_Store
+models/db/.DS_Store
+.DS_Store
