@@ -3,3 +3,6 @@ models/cache
 models/.DS_Store
 models/db/.DS_Store
 .DS_Store
+__pycache__
+models/__pycache__/
+schemas/__pycache__/
