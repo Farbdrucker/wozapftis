@@ -1,12 +1,25 @@
 import time
 from typing import Optional, List
 
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, Depends
+from sqlalchemy.orm import Session
 
-from schemas import Vote
-from models.utils import get_id
+import crud
+import schemas
+
+from database import SessionLocal
+
 
 app = FastAPI()
+
+
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 
 @app.get("/")
@@ -25,6 +38,7 @@ def load_city_bars(
     bar: Optional[List[str]] = Query(None),
     district: Optional[List[str]] = Query(None),
     beer: Optional[List[str]] = Query(None),
+    db: Session = Depends(get_db),
 ):
     """
 
@@ -38,6 +52,7 @@ def load_city_bars(
 
     """
     # only load data for requested city
+    db_city = crud.get_city_by_name(db, city)
 
     # filter data by districts
     if district is not None:
@@ -54,11 +69,11 @@ def load_city_bars(
     if beer is not None:
         pass
 
-    return {"data": {"city": city, "bar": bar, "district": district, "beer": beer}}
+    return {"data": db_city}
 
 
 @app.get("/bar/{bar}")
-def get_bar(bar: str):
+def get_bar(bar: str, db: Session = Depends(get_db)):
     """
 
     Args:
@@ -67,7 +82,15 @@ def get_bar(bar: str):
     Returns:
 
     """
-    return {"data": bar}
+    data = crud.get_bar_by_name(db, bar_name=bar)
+    return {"data": data}
+
+
+@app.post("/bar/{bar_id}", response_model=schemas.Vote)
+def create_vote_for_bar(
+    bar_id: int, vote: schemas.CreateVote, db: Session = Depends(get_db)
+):
+    return crud.create_vote(db, vote, venue_id=bar_id)
 
 
 @app.put("/bar/{bar}")
@@ -82,5 +105,5 @@ def vote_beer(bar: str, beer: str, user: Optional[str] = None):
     Returns:
 
     """
-    vote = Vote(bar=bar, beer=beer, timestamp=time.time(), user=user, id=get_id())
-    return {"data": vote.dict()}
+
+    return {"data": {"bar": bar, "beer": beer, "user": user}}
