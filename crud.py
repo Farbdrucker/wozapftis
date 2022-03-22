@@ -1,7 +1,6 @@
 from sqlalchemy.orm import Session
 
-from schemas.vote import Vote
-from . import models, schemas
+import schemas, models
 
 
 def get_venue(db: Session, venue_id: int):
@@ -15,6 +14,10 @@ def get_venue(db: Session, venue_id: int):
 
     """
     return db.query(models.Venue).filter(models.Venue.id == venue_id).first()
+
+
+def get_bar_by_name(db: Session, bar_name: str):
+    return db.query(models.Venue).filter(models.Venue.name == bar_name)
 
 
 def get_venues(db: Session, skip: int = 0, limit: int = 100):
@@ -31,7 +34,11 @@ def get_venues(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Venue).offset(skip).limit(limit).all()
 
 
-def create_vote(db: Session, vote: schemas.vote.CreateVote, venue_id: int):
+def get_city_by_name(db: Session, city: str, skip: int = 0, limit: int = 100):
+    return db.query(models.Venue).filter(models.Venue.city == city)
+
+
+def create_vote(db: Session, vote: schemas.CreateVote, venue_id: int):
     """
 
     Args:
